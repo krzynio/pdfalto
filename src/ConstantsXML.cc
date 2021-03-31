@@ -4,7 +4,7 @@ namespace ConstantsXML {
 	// All tags ALTO XML dialect
 	const char *TAG_ALTO = "alto";
 
-	const char *ALTO_URI = "http://www.loc.gov/standards/alto/v3/alto.xsd";
+	const char *ALTO_URI = "http://www.loc.gov/standards/alto/ns-v3#";
 
 	const char *TAG_DESCRIPTION = "Description";
     const char *TAG_MEASUREMENTUNIT = "MeasurementUnit";
@@ -91,7 +91,8 @@ namespace ConstantsXML {
 
 
 	// SVG XML TAGS
-	const char *ATTR_NUMFORMAT = "%g";
+	//const char *ATTR_NUMFORMAT = "%g";
+	const char *ATTR_NUMFORMAT = "%1.4f";
 	const char *ATTR_SID = "sid";
 	const char *ATTR_SVGID = "id";
 	const char *ATTR_SVG_X = "x";

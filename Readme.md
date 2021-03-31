@@ -1,13 +1,14 @@
 # pdfalto
 
-[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 [![Build Status](https://travis-ci.org/kermitt2/pdfalto.svg?branch=master)](https://travis-ci.org/kermitt2/pdfalto)
+[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/kermitt2/pdfalto/)](https://archive.softwareheritage.org/browse/origin/https://github.com/kermitt2/pdfalto/)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 **pdfalto** is a command line executable for parsing PDF files and producing structured XML representations of the PDF content in [ALTO](https://github.com/kermitt2/pdfalto/blob/master/schema/alto.xsd) format. 
 
-**pdfalto** is a fork of [pdf2xml](http://sourceforge.net/projects/pdf2xml), developed at XRCE, with modifications for robustness, addition of features and output enhanced format in [ALTO](https://github.com/altoxml/documentation/wiki) (including in particular space information, useful for instance for further machine learning processing). It is based on the [Xpdf](http://www.xpdfreader.com/) library.  
+**pdfalto** is initially a fork of [pdf2xml](http://sourceforge.net/projects/pdf2xml), developed at XRCE, with modifications for robustness, addition of features and output enhanced format in [ALTO](https://github.com/altoxml/documentation/wiki) (including in particular space information, useful for instance for further machine learning processing). It is based on the [Xpdf](http://www.xpdfreader.com/) library.  
 
-The latest stable version is *0.2*. 
+The latest stable version is *0.3*. Working version (master) is *0.4*.
 
 # Requirements
 
@@ -20,29 +21,29 @@ The latest stable version is *0.2*.
 General usage is as follow: 
 
 ```
- pdfalto [options] <PDF-file> [<xml-file>]
-  -f <int>               : first page to convert
-  -l <int>               : last page to convert
-  -verbose               : display pdf attributes
-  -noText                : do not extract textual objects
-  -noImage               : do not extract Images (Bitmap and Vectorial)
-  -noImageInline         : do not include images inline in the stream
-  -outline               : create an outline file xml (i.e. a table of content) as additional file
-  -annotation            : create an annotations file xml as additional file
-  -blocks                : add blocks informations whithin the structure
-  -readingOrder          : blocks follow the reading order
-  -fullFontName          : fonts names are not normalized
-  -nsURI <string>        : add the specified namespace URI
-  -opw <string>          : owner password (for encrypted files)
-  -upw <string>          : user password (for encrypted files)
-  -filesLimit <int>      : limit of asset files be extracted to the value specified
-  -q                     : don't print any messages or errors
-  -v                     : print version info
-  -h                     : print usage information
-  -help                  : print usage information
-  --help                 : print usage information
-  -?                     : print usage information
-  --saveconf <string>    : save all command line parameters in the specified XML <file>
+Usage: pdfalto [options] <PDF-file> [<xml-file>]
+  -f <int>                      : first page to convert
+  -l <int>                      : last page to convert
+  -verbose                      : display pdf attributes
+  -noImage                      : do not extract Images (Bitmap and Vectorial)
+  -noImageInline                : do not include images inline in the stream
+  -outline                      : create an outline file xml
+  -annotation                   : create an annotations file xml
+  -noLineNumbers                : do not output line numbers added in manuscript-style textual documents
+  -readingOrder                 : blocks follow the reading order
+  -noText                       : do not extract textual objects (might be useful, but non-valid ALTO)
+  -charReadingOrderAttr         : include TYPE attribute to String elements to indicate right-to-left reading order (might be useful, but non-valid ALTO)
+  -fullFontName                 : fonts names are not normalized
+  -nsURI <string>               : add the specified namespace URI
+  -opw <string>                 : owner password (for encrypted files)
+  -upw <string>                 : user password (for encrypted files)
+  -filesLimit <int>             : limit of asset files be extracted
+  -q                            : don't print any messages or errors
+  -v                            : print version info
+  -h                            : print usage information
+  -help                         : print usage information
+  --help                        : print usage information
+  -?                            : print usage information
 ```
 
 In addition to the [ALTO](https://github.com/altoxml/documentation/wiki) file describing the PDF content, the following files are generated:
@@ -92,15 +93,25 @@ The executable `pdfalto` is generated in the root directory. Additionally, this 
 
 # Changes
 
-- support unicode composition of characters
+New in version 0.3 (apart various bug fixes):
+
+- line number detection: line numbers (typically added for review in manuscripts/preprints) are specifically identified and not anymore mixed with the rest of text content, they will be grouped in a separate block or, optionally, not outputted in the ALTO file (`noLineNumbers` option)
+
+- removal of `-blocks` option, the block information are always returned for ensuring ALTO validation (`<TextBlock>` element)
+
+- bug fixing on reading order
+
+New in version 0.2 (apart various bug fixes):
+
+- support Unicode composition of characters
 
 - generalize reading order to all blocks (it was limited to the blocks of the first page)
 
-- use subscript/superscript text font style attribut
+- use subscript/superscript text font style attribute
 
 - use SVG as a format for vectorial images
 
-- propagate unsolved character unicode value (free unicode range for embedded fonts) as encoded special character in ALTO (so-called "placeholder" approach)
+- propagate unsolved character Unicode value (free Unicode range for embedded fonts) as encoded special character in ALTO (so-called "placeholder" approach)
 
 - generate metadata information in a separate XML file (as ALTO schema does not support that)
 
@@ -109,6 +120,10 @@ The executable `pdfalto` is generated in the root directory. Additionally, this 
 - add cmake
 
 - [ALTO](https://github.com/altoxml/documentation/wiki) output is replacing custom Xerox XML format
+
+- Note: this released version was used for Grobid release 0.5.6
+
+New in version 0.1 (apart various bug fixes): 
 
 - encode URI (using `xmlURIEscape` from libxml2) for the @href attribute content to avoid blocking XML wellformedness issues. From our experiments, this problem happens in average for 2-3 scholar PDF out of one thousand.
 
@@ -123,7 +138,9 @@ The executable `pdfalto` is generated in the root directory. Additionally, this 
 
 # Contributors
 
-Contact: Patrice Lopez (patrice.lopez@science-miner.com), Achraf Azhar (achraf.azhar@inria.fr)
+Contact: Patrice Lopez (patrice.lopez@science-miner.com)
+
+pdfalto is developed by Patrice Lopez (patrice.lopez@science-miner.com) and Achraf Azhar (achraf.azhar@inria.fr).
 
 pdf2xml is orignally written by Hervé Déjean, Sophie Andrieu, Jean-Yves Vion-Dury and  Emmanuel Giguet (XRCE) under GPL2 license. 
 
@@ -138,7 +155,7 @@ As the original pdf2xml and main dependency Xpdf, pdfalto is distributed under G
 
 # Useful links
 
-Some tools for converting ALTO to other formats:
+Some tools for converting ALTO into other formats:
 
 - https://github.com/filak/hOCR-to-ALTO
 - https://github.com/UB-Mannheim/ocr-fileformat
